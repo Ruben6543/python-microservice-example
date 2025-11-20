@@ -3,47 +3,58 @@ import requests
 
 app = Flask(__name__)
 
-SERVICIOS = {
-    "geo": "http://127.0.0.1:5001/malaga/geo",
-    "meteo": "http://127.0.0.1:5002/malaga/meteo", 
-    "demo": "http://127.0.0.1:5003/malaga/demo"
-}
+AEMET_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJydWJlbjA0MjkxQGNvcnJlby51Z3IuZXMiLCJqdGkiOiI2NWZmY2E0Zi0zNGRlLTRiZWEtOTE3Ni0zMjVmYzBhZWI3NzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTc2MjM2Nzc0MiwidXNlcklkIjoiNjVmZmNhNGYtMzRkZS00YmVhLTkxNzYtMzI1ZmMwYWViNzc2Iiwicm9sZSI6IiJ9.X8r88OimpWQXambuoLy97H-pAUgWV86fKPI9YUaJLwM"
+CODIGO_MUNICIPIO = "id29067"
 
-@app.route('/malaga/<tipo1>/<tipo2>', methods=['GET'])
-def datos_combinados(tipo1, tipo2):
-    """Microservicio 5: Combinación de dos servicios"""
+@app.route('/malaga/geo', methods=['GET'])
+def datos_geograficos():
     try:
-        tipos_validos = ["geo", "meteo", "demo"]
-        if tipo1 not in tipos_validos or tipo2 not in tipos_validos:
-            return jsonify({"error": "Tipos deben ser: geo, meteo o demo"}), 400
+        url = f"https://opendata.aemet.es/opendata/api/maestro/municipio/{CODIGO_MUNICIPIO}"
+        headers = {'api_key': AEMET_API_KEY}
         
-        if tipo1 == tipo2:
-            return jsonify({"error": "Los tipos deben ser diferentes"}), 400
+        response = requests.get(url, headers=headers)
         
-        datos_combinados = {}
+        if response.status_code == 429:
+            return jsonify({
+                "error": f"Request limit or throughput per minute exceeded for this user. Please wait until the next minute."
+            }), 404
         
-        try:
-            respuesta1 = requests.get(SERVICIOS[tipo1], timeout=5)
-            if respuesta1.status_code == 200:
-                datos_combinados[tipo1] = respuesta1.json()
-            else:
-                datos_combinados[tipo1] = {"error": f"Servicio {tipo1} no disponible"}
-        except requests.exceptions.RequestException:
-            datos_combinados[tipo1] = {"error": f"Servicio {tipo1} no disponible"}
+        elif response.status_code != 200:
+            return jsonify({
+                "error": f"Could not fetch data for municipality {CODIGO_MUNICIPIO}"
+            }), 404
+        
+        data_url = response.json().get('datos')
+        if not data_url:
+            return jsonify({"error": "No data URL returned from AEMET"}), 500
+        
+        data_response = requests.get(data_url)
+        
+        if data_response.status_code != 200:
+            return jsonify({"error": "Could not fetch geographic data"}), 500
 
-        try:
-            respuesta2 = requests.get(SERVICIOS[tipo2], timeout=5)
-            if respuesta2.status_code == 200:
-                datos_combinados[tipo2] = respuesta2.json()
-            else:
-                datos_combinados[tipo2] = {"error": f"Servicio {tipo2} no disponible"}
-        except requests.exceptions.RequestException:
-            datos_combinados[tipo2] = {"error": f"Servicio {tipo2} no disponible"}
+        municipios_data = data_response.json()
+
+        malaga_data = None
+        for item in municipios_data:
+            if item.get('id') == CODIGO_MUNICIPIO:
+                malaga_data = item
+                break
         
-        return jsonify(datos_combinados)
+        if not malaga_data:
+            return jsonify({"error": f"Municipality {CODIGO_MUNICIPIO} not found in data"}), 404
+        
+        geo_schema = {
+            "municipioid": 29067,
+            "latitud": float(malaga_data.get("latitud_dec")),
+            "longitud": float(malaga_data.get("longitud_dec")),
+            "altitud": float(malaga_data.get("altitud"))
+        }
+        
+        return jsonify(geo_schema)
         
     except Exception as e:
-        return jsonify({"error": "Error interno del servidor"}), 500
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5004, host='0.0.0.0')
+    app.run(debug=True, port=5001, host='0.0.0.0')

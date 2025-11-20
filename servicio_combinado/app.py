@@ -4,9 +4,9 @@ import requests
 app = Flask(__name__)
 
 SERVICIOS = {
-    "geo": "http://127.0.0.1:5001/malaga/geo",
-    "meteo": "http://127.0.0.1:5002/malaga/meteo", 
-    "demo": "http://127.0.0.1:5003/malaga/demo"
+    "geo": "http://servicio-geo:5001/malaga/geo",
+    "meteo": "http://servicio-meteo:5002/malaga/meteo", 
+    "demo": "http://servicio-demo:5003/malaga/demo"
 }
 
 @app.route('/malaga/<tipo1>/<tipo2>', methods=['GET'])

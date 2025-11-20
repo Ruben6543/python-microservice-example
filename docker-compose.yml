@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  servicio-basico:
+    build:
+      context: ./servicio_basico
+      dockerfile: Dockerfile
+    container_name: servicio-municipio
+    ports:
+      - "5000:5000"
+
+  servicio-geo:
+    build:
+      context: ./servicio_geo
+      dockerfile: Dockerfile
+    container_name: servicio-geo
+    ports:
+      - "5001:5001"
+
+  servicio-meteo:
+    build:
+      context: ./servicio_meteo
+      dockerfile: Dockerfile
+    container_name: servicio-meteo
+    ports:
+      - "5002:5002"
+
+  servicio-demo:
+    build:
+      context: ./servicio_demo
+      dockerfile: Dockerfile
+    container_name: servicio-demo
+    ports:
+      - "5003:5003"
+  
+  servicio-combinado:
+    build:
+      context: ./servicio_combinado
+      dockerfile: Dockerfile
+    container_name: servicio-combinado
+    ports:
+      - "5004:5004"
+
+      

@@ -25,6 +25,8 @@ Para el presente proyecto se recomienda la instalación de [Visual Studio Code](
 
 ## 2. Preparación y ejecución del Proyecto
 
+Si desea utilizar la herramienta _Docker_, puede continuar desde punto 5.
+
 Es importante mencionar que cada proyecto es independiente, por lo que cada uno cuenta con su respectivo `app.py` y _virtual enviroment_.
 
 ### 2.1 Virtual enviroment
@@ -184,9 +186,35 @@ El método devuelve información conforme a los tipos enviados, en este caso _ge
 
 ## 4. Consideraciones adicionales
  
-1. Es posible que un servicio de AEMET no devuelva la información correspondiente, dado que existe un número limitado de peticiones, si es el caso, devolverá un error 429.
+1. Es posible que un servicio de AEMET no devuelva la información correspondiente, dado que existe un número limitado de peticiones (error 429), si es el caso, el servicio devolverá un mensaje correspondiente.
 
-2. Se compartirá el API key en el código con la finalidad de poder realizar las pruebas respectivas.
+2. Se compartió el API key en el código con la finalidad de poder realizar pruebas.
+
+## 5. Docker
+Los contenedores _Docker_ permiten desplegar/empaquetar aplicaciones dentro de contenedores, al mismo tiempo permite gestionar estos. Tome en cuenta que no será necesaria la utilización de las variables de entorno (véase el punto 2.1) si decide ejecutar el proeycto con _docker_.
+
+Para ejecutar el archivo _docker-compose.yml_ en el mismo directorio, ejecute el siguiente comando:
+
+> ```
+> docker-compose up --build
+> ```
+
+El mismo ejecutara todos los _Dockerfile_ dentro de cada proyecto.
+
+Así mismo, puede ejecutar la compilación y creación de contenedores de manera separada mediante los comandos:
+
+Para su construccion:
+> ```
+> docker-compose build
+> ```
+
+
+Para su ejecución:
+> ```
+> docker-compose up
+> ```
+
+
 
 # Extra
 
