@@ -48,7 +48,7 @@ Finalmente ejecute el proyecto:
 > py app.py
 > ```
 
-### 2.2 Requerimientos
+### 2.2 Librerías
 Dentro de cada directorio, podra visualizar un archivo _requeriments.txt_ el cual contiene todos los _pacakges_ requeridos por cada proyecto.
 
 Dentro de cada proyecto, con el virtual enviroment activado (véase el punto 2.1), puede instalar los _packages_ con el siguiente comando:
@@ -58,7 +58,7 @@ Dentro de cada proyecto, con el virtual enviroment activado (véase el punto 2.1
 > ```
 
 ### 2.3 Schemas
-Algunos servicios requieren consultar información local, por tal motivo se tienen diferentes _schemas_ en formato _json_.
+Algunos servicios requieren consultar información local como fuente de datos, por tal motivo se tienen diferentes _schemas_ en formato _json_.
 
 
 ## 3. Documentación
@@ -186,12 +186,12 @@ El método devuelve información conforme a los tipos enviados, en este caso _ge
 
 ## 4. Consideraciones adicionales
  
-1. Es posible que un servicio de AEMET no devuelva la información correspondiente, dado que existe un número limitado de peticiones (error 429), si es el caso, el servicio devolverá un mensaje correspondiente.
+1. Es posible que un servicio de AEMET no se ejecute correctamente, dado que existe un número limitado de peticiones (error 429), si es el caso, el servicio devolverá un mensaje correspondiente.
 
 2. Se compartió el API key en el código con la finalidad de poder realizar pruebas.
 
 ## 5. Docker
-Los contenedores _Docker_ permiten desplegar/empaquetar aplicaciones dentro de contenedores, al mismo tiempo permite gestionar estos. Tome en cuenta que no será necesaria la utilización de las variables de entorno (véase el punto 2.1) si decide ejecutar el proeycto con _docker_.
+Los contenedores _Docker_ permiten desplegar y empaquetar aplicaciones dentro de contenedores, al mismo tiempo permite gestionar estos. Tome en cuenta que no será necesaria la utilización de los entornos virtuales (véase el punto 2.1) si decide ejecutar el proyecto con _docker_.
 
 Para ejecutar el archivo _docker-compose.yml_ en el mismo directorio, ejecute el siguiente comando:
 
